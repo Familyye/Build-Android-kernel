@@ -1,0 +1,30 @@
+{
+  # 适合内核版本5.10及之后的GKI内核  
+  "kernel_source":"https://github.com/LIghtJUNction/android_kernel_oneplus_sm8475/tree/oneplus/sm8475_u_14.0.0_oneplus_11r_5g", # 仓库url+分支名
+  "kernel_name":"", # 默认为空 使用示例:"-lightjunction" 内核的名字就会带这个后缀 ,在defconfig里的一个配置选项LOCALVERSION
+  
+  # 编译工具以及版本
+  "tools" = {
+    "clang" = ""
+    "gcc" = ""
+    
+        
+  },
+  # 菜单选项
+  option_ksu = "false",
+  option_docker = "false"
+  option_lvx = "false"
+
+  # 内核配置覆盖/补充 # 空值表示不变 y表示是 n表示否
+  CONFIG_KPROBES = "" # kernelsu 利用这个内核探针功能实现自定义操作
+  CONFIG_HAVE_KPROBES = "" 
+  CONFIG_KPROBE_EVENTS= "" 
+
+  # 如果ksu不生效 则打开依赖项
+  CONFIG_MODULES = ""
+  
+  
+
+
+  
+}
