@@ -72,8 +72,7 @@ jobs:
     if: ${{ needs.read_config.outputs.run_build == 'true' }}
     strategy:
       matrix:
-        include: # Corrected section
-          - tools: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
+        tools: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
       fail-fast: false
 
     steps:
