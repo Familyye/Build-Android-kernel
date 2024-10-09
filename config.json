@@ -8,7 +8,7 @@
     "custom" : "false"
   },
 
-  my_custom_tools: {
+  "my_custom_tools": {
     "aarch64-linux-android-": "4.9",
     "clang": "11.0.3",
     "ld": "2.31",
