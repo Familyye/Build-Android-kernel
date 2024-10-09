@@ -85,4 +85,7 @@ jobs:
   }
 }
 
-目标：利用并行运行多个版本编译工具以提高内核编译效率
+目标：利用并行运行多个版本编译工具以提高内核编译效
+
+关于矩阵的说明
+https://docs.github.com/zh/actions/writing-workflows/choosing-what-your-workflow-does/running-variations-of-jobs-in-a-workflow
