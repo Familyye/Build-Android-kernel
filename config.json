@@ -73,8 +73,7 @@
       "objdump": "latest",
       "strip": "latest"
     }
-  },
-
+    },
   "option_ksu": "false",
   "option_docker": "false",
   "option_lvx": "false",
