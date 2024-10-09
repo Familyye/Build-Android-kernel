@@ -63,6 +63,8 @@ jobs:
             echo "run_build=false" >> $GITHUB_OUTPUT
             echo "未匹配到任何构建条件，跳过构建。"
 
+          fi
+
   build:
     name: "Build Kernel"
     runs-on: ubuntu-latest
