@@ -1,0 +1,86 @@
+如果用户选择 "use_preset": "Android10", "use_matrix": "false", "custom" : "false",
+则工作流将使用预设值“Android10”的工具集，且仅运行这一个，因为use_matrix和custom被设置为false
+如果用户选择 "use_preset": "Android10", "use_matrix": "true", "custom" : "false",
+则忽略use_preset的指定，而使用全部预设值，利用github matrix的能力，并行运行所有preset，
+如果用户选择 "use_preset": "Android10", "use_matrix": "true", "custom" : "true", 则忽略前面两个配置的值，而仅运行一个用户自定义的工具集
+# 该工作流程的目的是根据用户的选择来构建内核
+name: Build Kernel
+
+on:
+  workflow_dispatch:
+
+env:
+  CONFIG: "config.json"
+  OUTPUT_DIR: "out" # 输出文件位置
+
+jobs:
+  build:
+    name: "Build Kernel"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # tools_preset: 从上一个名为 read_config 的 job 的 outputs 中读取 tools_preset 的值，并将其转换为 JSON 格式
+        tools_preset: ${{ fromJson(needs.read_config.outputs.tools_preset) }}
+        
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v4
+
+      - name: "Set up jq"
+        run: sudo apt-get install -y jq
+
+      - name: "Read config -- 读取配置"
+        id: read_config
+        run: |
+          echo "读取配置"
+          # 根据用户的配置json文件来决定是否启用matrix并行尝试全部的preset预设值
+          # 根据用户的配置json文件来决定是否启用自定义的工具集 -- 仅运行这一个
+
+      - name: "Cache dependencies"
+        uses: actions/cache@v4
+        with:
+          path: /usr/local/bin
+          key: ${{ runner.os }}-gcc-${{ env.aarch64-linux-android- }}-clang-${{ env.clang }}-ld-${{ env.ld }}-make-${{ env.make }}-objcopy-${{ env.objcopy }}-objdump-${{ env.objdump }}-strip-${{ env.strip }}
+          restore-keys: |
+            ${{ runner.os }}-gcc-${{ env.aarch64-linux-android- }}-clang-${{ env.clang }}-ld-${{ env.ld }}-make-${{ env.make }}-objcopy-${{ env.objcopy }}-objdump-${{ env.objdump }}-strip-${{ env.strip }}
+
+      - name: "Download tools -- 下载编译工具"
+        run: |
+          echo "下载编译工具"
+          echo "更新完成"
+          echo "安装特定版本的编译工具"
+      - name: "Build Kernel"
+        run: |
+          echo "构建内核"
+          # 添加内核构建命令
+
+# 以下是一个示例的config.json文件
+{
+  ...
+  "tools": {
+    "use_preset": "Android10", #  使用预设值，如果use_matrix为false，则只使用这一个preset
+    "use_matrix": "false", # 是否使用github matrix的能力
+    "custom": "false" # 是否使用自定义工具集
+    # 如果custom为true，则使用下面的自定义工具集
+    "clang": "clang version",
+    "ld": "GNU ld",
+    "make": "GNU Make",
+    "objcopy": "GNU objcopy",
+    "objdump": "GNU objdump",
+    "strip": "GNU strip"
+  },
+  }
+  "tools_preset":{
+    "pre_set1":{
+      "aarch64-linux-android-": "10",
+      "clang": "10",
+      "ld": "10",
+      "make": "10",
+      "objcopy": "10",
+      "objdump": "10",
+      "strip": "10"
+    }
+    ...
+
+  }
+}
