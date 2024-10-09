@@ -1,10 +1,10 @@
 {
   "kernel_source": "https://github.com/LIghtJUNction/android_kernel_oneplus_sm8475/tree/oneplus/sm8475_u_14.0.0_oneplus_11r_5g",
-  "kernel_name": "",
+  "kernel_name": "debug",
 
   "tools_config": {
     "use_preset": "Android10",
-    "use_matrix": "false",
+    "use_matrix": "true",
     "custom" : "false"
   },
 
