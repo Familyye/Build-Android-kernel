@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
 
 env:
-  CONFIG: "config.json"
-  OUTPUT_DIR: "out" # 输出文件位置
+  CONFIG: "config.json"  # 配置文件路径
+  OUTPUT_DIR: "out"      # 输出文件位置
 
 jobs:
 
@@ -24,47 +24,37 @@ jobs:
       - name: "Read config -- 读取配置"
         id: config
         run: |
-          USE_PRESET=$(jq -r '.tools_config.use_preset' env.CONFIG) # 读取 use_preset 的值
-          USE_MATRIX=$(jq -r '.tools_config.use_matrix' env.CONFIG) # 读取 use_matrix 的值
-          CUSTOM=$(jq -r '.tools_config.custom' env.CONFIG) # 读取 custom 的值
+          CONFIG_FILE="$GITHUB_WORKSPACE/$CONFIG"
+
+          USE_PRESET=$(jq -r '.tools_config.use_preset' $CONFIG_FILE) # 读取 use_preset 的值
+          USE_MATRIX=$(jq -r '.tools_config.use_matrix' $CONFIG_FILE) # 读取 use_matrix 的值
+          CUSTOM=$(jq -r '.tools_config.custom' $CONFIG_FILE)         # 读取 custom 的值
 
           set_tools_env_vars() {
             local tools_json=$1
             for tool in $(jq -c 'to_entries[]' <<< "$tools_json"); do
               local tool_name=$(jq -r '.key' <<< "$tool")
               local tool_version=$(jq -r '.value' <<< "$tool")
-              # 设置环境变量到GitHub Action env $GITHUB_ENV 直接使用env调用
               echo "${tool_name}_VERSION=$tool_version" >> $GITHUB_ENV
             done
           }
 
-          # 判断是否启用自定义配置
           if [[ "$CUSTOM" == "true" ]]; then
             echo "custom=true"
-            # 提取 my_custom_tools 的值并赋值给变量
-            my_custom_tools=$(jq -c '.my_custom_tools' env.CONFIG)
-
-            # 将 my_custom_tools 的值写入 GITHUB_OUTPUT 文件，并指定输出变量的名称
+            my_custom_tools=$(jq -c '.my_custom_tools' $CONFIG_FILE)
             echo "my_custom_tools=$my_custom_tools" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
-
-            # 调用 set_tools_env_vars 函数并传递 my_custom_tools 的值
             set_tools_env_vars "$my_custom_tools"
 
-          # 判断是否启用矩阵，并行所有 preset 值 （预设值）
           elif [[ "$USE_MATRIX" == "true" && "$CUSTOM" == "false" ]]; then
-            # 在矩阵模式下忽略 use_preset 的值 直接全部启动！
-            echo "use_matrix=true" # 启用矩阵模式 并行尝试所有 preset 
-            tools_preset=$(jq -c '.tools_preset' env.CONFIG)
+            echo "use_matrix=true"
+            tools_preset=$(jq -c '.tools_preset' $CONFIG_FILE)
             echo "matrix_tools_preset=$tools_preset" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
 
-
-          # 若未启用矩阵和自定义模式，仅使用指定的单一 preset （预设值）
           elif [[ "$USE_MATRIX" == "false" && "$CUSTOM" == "false" ]]; then
-            # 直接使用指定的单一 preset
             echo "use_preset=true"
-            tools_preset=$(jq -c --arg preset "$USE_PRESET" '.tools_preset[$preset]' env.CONFIG)
+            tools_preset=$(jq -c --arg preset "$USE_PRESET" '.tools_preset[$preset]' $CONFIG_FILE)
             echo "tools_preset=$tools_preset" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
             set_tools_env_vars "$tools_preset"
@@ -77,7 +67,7 @@ jobs:
     name: "Build Kernel"
     runs-on: ubuntu-latest
     needs: read_config
-    if: ${{ needs.read_config.outputs.run_build == 'true' }} # 只在 read_config 设置运行标志时执行
+    if: ${{ needs.read_config.outputs.run_build == 'true' }}
     strategy:
       matrix:
         matrix_tools_preset: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
@@ -103,7 +93,7 @@ jobs:
           echo "下载编译工具"
           echo "更新完成"
           echo "安装特定版本的编译工具"
-          
+
       - name: "Build Kernel"
         run: |
           echo "构建内核"
