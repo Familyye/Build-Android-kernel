@@ -11,18 +11,17 @@
 
 这个文件包含了项目的配置参数。
 
+## feature
+一键并行运行多个工具链同时开始编译同一个内核源码
+详细的编译错误警告
+精简重复输出的编译日志
+
 ## 使用方法
 
 ### 触发工作流
 
-你可以通过 GitHub Actions 的 `workflow_dispatch` 事件手动触发这个工作流。
+你可以通过 GitHub Actions 的 `workflow_dispatch` 事件手动触发这个工作流
 
-### 环境变量
-
-工作流中使用了以下环境变量：
-
-- `CONFIG`: 配置文件路径，默认为 `config.json`。
-- `OUTPUT_DIR`: 输出文件位置，默认为 `out`。
 
 ## 贡献
 
