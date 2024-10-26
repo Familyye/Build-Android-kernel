@@ -22,44 +22,53 @@ jobs:
       - name: "Read config -- 读取配置"
         id: config
         run: |
+          echo "Reading configuration from $CONFIG_FILE"
           CONFIG_FILE="$GITHUB_WORKSPACE/$CONFIG"
 
           USE_PRESET=$(jq -r '.tools_config.use_preset' $CONFIG_FILE)
           USE_MATRIX=$(jq -r '.tools_config.use_matrix' $CONFIG_FILE)
           CUSTOM=$(jq -r '.tools_config.custom' $CONFIG_FILE)
 
+          echo "USE_PRESET: $USE_PRESET"
+          echo "USE_MATRIX: $USE_MATRIX"
+          echo "CUSTOM: $CUSTOM"
+
           set_tools_env_vars() {
             local tools_json=$1
             for tool in $(jq -c 'to_entries[]' <<< "$tools_json"); do
               local tool_name=$(jq -r '.key' <<< "$tool")
               local tool_version=$(jq -r '.value' <<< "$tool")
+              echo "Setting environment variable for $tool_name: $tool_version"
               echo "${tool_name}_VERSION=$tool_version" >> $GITHUB_ENV
             done
           }
 
           if [[ "$CUSTOM" == "true" ]]; then
-            echo "custom=true"
+            echo "Custom tools configuration detected"
             my_custom_tools=$(jq -c '.my_custom_tools' $CONFIG_FILE)
+            echo "my_custom_tools: $my_custom_tools"
             echo "my_custom_tools=$my_custom_tools" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
             set_tools_env_vars "$my_custom_tools"
 
           elif [[ "$USE_MATRIX" == "true" && "$CUSTOM" == "false" ]]; then
-            echo "use_matrix=true"
+            echo "Matrix tools configuration detected"
             tools_preset=$(jq -c '.tools_preset' $CONFIG_FILE)
+            echo "tools_preset: $tools_preset"
             echo "matrix_tools_preset=$(jq -c . <<< \"$tools_preset\")" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
 
           elif [[ "$USE_MATRIX" == "false" && "$CUSTOM" == "false" ]]; then
-            echo "use_preset=true"
+            echo "Preset tools configuration detected"
             tools_preset=$(jq -c --arg preset "$USE_PRESET" '.tools_preset[$preset]' $CONFIG_FILE)
+            echo "tools_preset: $tools_preset"
             echo "matrix_tools_preset=$(jq -c . <<< \"$tools_preset\")" >> $GITHUB_OUTPUT
             echo "run_build=true" >> $GITHUB_OUTPUT
             set_tools_env_vars "$tools_preset"
 
           else
+            echo "No matching build conditions found, skipping build."
             echo "run_build=false" >> $GITHUB_OUTPUT
-            echo "未匹配到任何构建条件，跳过构建。"
           fi
 
       - name: "Debug outputs"
@@ -93,11 +102,11 @@ jobs:
 
       - name: "Download tools -- 下载编译工具"
         run: |
-          echo "下载编译工具"
-          echo "更新完成"
-          echo "安装特定版本的编译工具"
+          echo "Downloading tools"
+          echo "Update complete"
+          echo "Installing specific versions of tools"
 
       - name: "Build Kernel"
         run: |
-          echo "构建内核"
+          echo "Building kernel"
           # 在此处添加内核构建命令
