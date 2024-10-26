@@ -1,12 +1,11 @@
 {
-    "build": {
-      "toolchain": ["gcc", "clang"],
-      "variants": ["gki", "vanilla"],
-      "parallel": true
-    },
-    "repository": {
-      "url": "https://github.com/OnePlusOSS/android_kernel_oneplus_sm8475.git",
-      "branch": "oneplus/sm8475_u_14.0.0_oneplus_11r_5g"
-    }
+  "build": {
+    "toolchain": ["gcc", "clang"],
+    "variants": ["gki", "vanilla"],
+    "parallel": true
+  },
+  "repository": {
+    "url": "https://github.com/OnePlusOSS/android_kernel_oneplus_sm8475.git",
+    "branch": "oneplus/sm8475_u_14.0.0_oneplus_11r_5g"
   }
-  
+}
