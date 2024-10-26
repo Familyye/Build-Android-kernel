@@ -8,18 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set Environment Variables
-        run: |
-          echo "Setting up environment variables"
+        run: echo "Setting up environment variables"
 
   Get_ready:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        with:
+          repository: OnePlusOSS/android_kernel_oneplus_sm8475
+          ref: oneplus/sm8475_u_14.0.0_oneplus_11r_5g
       - name: Set Up Toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install gcc-arm-linux-gnueabi clang
+          sudo apt-get install -y gcc-arm-linux-gnueabi clang
 
   build:
     runs-on: ubuntu-latest
