@@ -33,7 +33,6 @@ jobs:
           USE_MATRIX=$(jq -r '.tools_config.use_matrix' $CONFIG_FILE)
           CUSTOM=$(jq -r '.tools_config.custom' $CONFIG_FILE)
 
-          # 处理工具版本输出
           set_tools_env_vars() {
             local tools_json=$1
             for tool in $(jq -c 'to_entries[]' <<< "$tools_json"); do
@@ -100,8 +99,8 @@ jobs:
       - name: "Download tools -- 下载编译工具"
         run: |
           echo "下载编译工具"
-          echo "更新完成"
-          echo "安装特定版本的编译工具"
+          # 在这里添加实际的工具下载命令，例如使用 wget 或 curl
+          echo "工具下载完成"
 
       - name: "Build Kernel"
         run: |
