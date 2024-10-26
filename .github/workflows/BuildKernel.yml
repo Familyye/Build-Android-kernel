@@ -1,41 +1,40 @@
-name: Build Android Kernel
+name: Build Kernel
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
+  set_up:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Environment Variables
+        run: |
+          echo "Setting up environment variables"
+
+  Get_ready:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Set Up Toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install gcc-arm-linux-gnueabi clang
+
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        toolchain: [gcc, clang]  # 工具组合
-        variant: [gki, vanilla]   # 内核变体
+        toolchain: [gcc, clang]
+        variant: [gki, vanilla]
+    needs: Get_ready
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Set Up Toolchain
+      - name: Compile Kernel
         run: |
-          if [ "${{ matrix.toolchain }}" == "gcc" ]; then
-            sudo apt-get install gcc-arm-linux-gnueabi
-          else
-            sudo apt-get install clang
-          fi
-
-      - name: Configure Kernel
-        run: |
-          cd kernel  # 进入内核源代码目录
+          cd kernel
           if [ "${{ matrix.variant }}" == "gki" ]; then
             make gki_defconfig
           else
             make vanilla_defconfig
           fi
-
-      - name: Compile Kernel
-        run: |
           make -j$(nproc) ARCH=arm CROSS_COMPILE=$(if [ "${{ matrix.toolchain }}" == "gcc" ]; then echo "arm-linux-gnueabi-"; else echo "aarch64-linux-gnu-"; fi)
