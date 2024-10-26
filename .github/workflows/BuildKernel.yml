@@ -67,6 +67,9 @@ jobs:
             echo "run_build=false" >> $GITHUB_OUTPUT
             echo "未匹配到任何构建条件，跳过构建。"
           fi
+      - name: "Debug outputs"
+        run: echo "${{ needs.read_config.outputs.matrix_tools_preset }}"
+        
 
   build:
     name: "Build Kernel"
@@ -75,7 +78,7 @@ jobs:
     if: ${{ needs.read_config.outputs.run_build == 'true' }}
     strategy:
       matrix:
-        tools: [ ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }} ]
+        tools: ${{ toJson(needs.read_config.outputs.matrix_tools_preset) }}
       fail-fast: false
     steps:
       - name: "Checkout repository"
