@@ -78,15 +78,15 @@ jobs:
     if: ${{ needs.read_config.outputs.run_build == 'true' }}
     strategy:
       matrix:
-        tools: ${{ toJson(needs.read_config.outputs.matrix_tools_preset) }}
+        tools: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
       fail-fast: false
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v4
-
+    
       - name: "Set up jq"
         run: sudo apt-get install -y jq
-
+    
       - name: "Cache dependencies"
         uses: actions/cache@v4
         with:
@@ -94,13 +94,13 @@ jobs:
           key: ${{ runner.os }}-gcc-${{ matrix.tools.aarch64-linux-android- }}-clang-${{ matrix.tools.clang }}-ld-${{ matrix.tools.ld }}-make-${{ matrix.tools.make }}-objcopy-${{ matrix.tools.objcopy }}-objdump-${{ matrix.tools.objdump }}-strip-${{ matrix.tools.strip }}
           restore-keys: |
             ${{ runner.os }}-gcc-${{ matrix.tools.aarch64-linux-android- }}-clang-${{ matrix.tools.clang }}-ld-${{ matrix.tools.ld }}-make-${{ matrix.tools.make }}-objcopy-${{ matrix.tools.objcopy }}-objdump-${{ matrix.tools.objdump }}-strip-${{ matrix.tools.strip }}
-
+        
       - name: "Download tools -- 下载编译工具"
         run: |
           echo "下载编译工具"
           echo "更新完成"
           echo "安装特定版本的编译工具"
-
+        
       - name: "Build Kernel"
         run: |
           echo "构建内核"
