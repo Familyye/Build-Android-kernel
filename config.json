@@ -1,86 +1,12 @@
 {
-  "kernel_source": "https://github.com/LIghtJUNction/android_kernel_oneplus_sm8475/tree/oneplus/sm8475_u_14.0.0_oneplus_11r_5g",
-  "kernel_name": "debug",
-
-  "tools_config": {
-    "use_preset": "Android10",
-    "use_matrix": "true",
-    "custom" : "false"
-  },
-
-  "my_custom_tools": {
-    "aarch64-linux-android-": "4.9",
-    "clang": "11.0.3",
-    "ld": "2.31",
-    "make": "4.3",
-    "objcopy": "2.31",
-    "objdump": "2.31",
-    "strip": "2.31"
-  },
-
-  "tools_preset": {
-    "Android10": {
-      "aarch64-linux-android-": "4.9",
-      "clang": "10.0.8",
-      "ld": "2.30",
-      "make": "4.2.1",
-      "objcopy": "2.30",
-      "objdump": "2.30",
-      "strip": "2.30"
+    "build": {
+      "toolchain": ["gcc", "clang"],
+      "variants": ["gki", "vanilla"],
+      "parallel": true
     },
-    "Android11": {
-      "aarch64-linux-android-": "4.9",
-      "clang": "11.0.3",
-      "ld": "2.31",
-      "make": "4.3",
-      "objcopy": "2.31",
-      "objdump": "2.31",
-      "strip": "2.31"
-    },
-    "Android12": {
-      "aarch64-linux-android-": "5.0",
-      "clang": "12.0.0",
-      "ld": "2.35",
-      "make": "4.3",
-      "objcopy": "2.35",
-      "objdump": "2.35",
-      "strip": "2.35"
-    },
-    "Android13": {
-      "aarch64-linux-android-": "5.0",
-      "clang": "14.0.0",
-      "ld": "2.36",
-      "make": "4.3",
-      "objcopy": "2.36",
-      "objdump": "2.36",
-      "strip": "2.36"
-    },
-    "Android14": {
-      "aarch64-linux-android-": "5.0",
-      "clang": "15.0.0",
-      "ld": "2.37",
-      "make": "4.3",
-      "objcopy": "2.37",
-      "objdump": "2.37",
-      "strip": "2.37"
-    },
-    "latest": {
-      "aarch64-linux-android-": "latest",
-      "clang": "latest",
-      "ld": "latest",
-      "make": "latest",
-      "objcopy": "latest",
-      "objdump": "latest",
-      "strip": "latest"
+    "repository": {
+      "url": "https://github.com/OnePlusOSS/android_kernel_oneplus_sm8475.git",
+      "branch": "oneplus/sm8475_u_14.0.0_oneplus_11r_5g"
     }
-  },
-  "option_ksu": "false",
-  "option_docker": "false",
-  "option_lvx": "false",
-
-  "CONFIG_KPROBES": "",
-  "CONFIG_HAVE_KPROBES": "",
-  "CONFIG_KPROBE_EVENTS": "",
-
-  "CONFIG_MODULES": ""
-}
+  }
+  
