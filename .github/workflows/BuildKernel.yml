@@ -1,14 +1,12 @@
 name: Build Kernel
-
 on:
   workflow_dispatch:
 
 env:
-  CONFIG: "config.json"  # 配置文件路径
-  OUTPUT_DIR: "out"      # 输出文件位置
+  CONFIG: "config.json"
+  OUTPUT_DIR: "out"
 
 jobs:
-
   read_config:
     runs-on: ubuntu-latest
     outputs:
@@ -26,9 +24,9 @@ jobs:
         run: |
           CONFIG_FILE="$GITHUB_WORKSPACE/$CONFIG"
 
-          USE_PRESET=$(jq -r '.tools_config.use_preset' $CONFIG_FILE) # 读取 use_preset 的值
-          USE_MATRIX=$(jq -r '.tools_config.use_matrix' $CONFIG_FILE) # 读取 use_matrix 的值
-          CUSTOM=$(jq -r '.tools_config.custom' $CONFIG_FILE)         # 读取 custom 的值
+          USE_PRESET=$(jq -r '.tools_config.use_preset' $CONFIG_FILE)
+          USE_MATRIX=$(jq -r '.tools_config.use_matrix' $CONFIG_FILE)
+          CUSTOM=$(jq -r '.tools_config.custom' $CONFIG_FILE)
 
           set_tools_env_vars() {
             local tools_json=$1
@@ -63,8 +61,6 @@ jobs:
             echo "run_build=false" >> $GITHUB_OUTPUT
             echo "未匹配到任何构建条件，跳过构建。"
 
-          fi
-
   build:
     name: "Build Kernel"
     runs-on: ubuntu-latest
@@ -72,10 +68,8 @@ jobs:
     if: ${{ needs.read_config.outputs.run_build == 'true' }}
     strategy:
       matrix:
-        include: # Corrected section
-          - tools: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
+        tools: ${{ fromJson(needs.read_config.outputs.matrix_tools_preset) }}
       fail-fast: false
-
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v4
