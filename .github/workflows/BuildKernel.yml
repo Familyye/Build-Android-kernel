@@ -66,7 +66,10 @@ jobs:
           else
             echo "run_build=false" >> $GITHUB_OUTPUT
             echo "未匹配到任何构建条件，跳过构建。"
-          fi
+        shell: /usr/bin/bash -e {0}
+        env:
+          CONFIG: config.json
+          OUTPUT_DIR: out
 
   build:
     name: "Build Kernel"
@@ -88,9 +91,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: /usr/local/bin
-          key: ${{ runner.os }}-gcc-${{ env.aarch64-linux-android- }}-clang-${{ env.clang }}-ld-${{ env.ld }}-make-${{ env.make }}-objcopy-${{ env.objcopy }}-objdump-${{ env.objdump }}-strip-${{ env.strip }}
+          key: ${{ runner.os }}-gcc-${{ matrix.tools.aarch64-linux-android- }}-clang-${{ matrix.tools.clang }}-ld-${{ matrix.tools.ld }}-make-${{ matrix.tools.make }}-objcopy-${{ matrix.tools.objcopy }}-objdump-${{ matrix.tools.objdump }}-strip-${{ matrix.tools.strip }}
           restore-keys: |
-            ${{ runner.os }}-gcc-${{ env.aarch64-linux-android- }}-clang-${{ env.clang }}-ld-${{ env.ld }}-make-${{ env.make }}-objcopy-${{ env.objcopy }}-objdump-${{ env.objdump }}-strip-${{ env.strip }}
+            ${{ runner.os }}-gcc-${{ matrix.tools.aarch64-linux-android- }}-clang-${{ matrix.tools.clang }}-ld-${{ matrix.tools.ld }}-make-${{ matrix.tools.make }}-objcopy-${{ matrix.tools.objcopy }}-objdump-${{ matrix.tools.objdump }}-strip-${{ matrix.tools.strip }}
 
       - name: "Download tools -- 下载编译工具"
         run: |
