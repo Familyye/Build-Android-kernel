@@ -2,10 +2,10 @@ name: Build Kernel
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 env:
@@ -66,10 +66,7 @@ jobs:
           else
             echo "run_build=false" >> $GITHUB_OUTPUT
             echo "未匹配到任何构建条件，跳过构建。"
-        shell: /usr/bin/bash -e {0}
-        env:
-          CONFIG: config.json
-          OUTPUT_DIR: out
+          fi
 
   build:
     name: "Build Kernel"
